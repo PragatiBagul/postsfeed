@@ -88,7 +88,6 @@ export const getAllTopics = () => {
 }
 
 export const createPost = (body) => {
-    console.log(body);
     const requestUrl = 'http://localhost:8080/post/create/';
     const options = {
         method: 'POST',
@@ -97,6 +96,19 @@ export const createPost = (body) => {
             'Content-Type': 'application/json',
         },
         body: body,
+    };
+    const res = request(requestUrl, options).then(response => response.data);    
+    return res;
+}
+
+export const addPostContent = (content,postId) => {
+    const requestUrl = `http://localhost:8080/post/${postId}/content/image`;
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+        body: content,
     };
     const res = request(requestUrl, options).then(response => response.data);    
     return res;

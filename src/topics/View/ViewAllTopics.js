@@ -18,7 +18,7 @@ const ViewAllTopics = ({ setView,setSelected }) => {
     };
     setTimeout(async() => {
       const response = await fetch();
-      console.log(response);
+      
       setTopics(response);
       setIsPending(false);
     },1000);
