@@ -3,14 +3,14 @@ import { useState } from "react";
 import { deepPurple } from "@mui/material/colors";
 import { useAuth } from "../../hooks/useAuth";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import GetDate from "../../utils/GetDate";
+import {getDate} from "../../utils/GetDate";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import useWindowDimensions from "../../utils/useWindowDimensions";
 import { createTopic } from "../../utils/RequestEndPoints";
 const NewTopic = ({setView}) => {
     const [topicName, setTopicName] = useState("");
     const [topicDescription, setTopicDescription] = useState("");
-    const [date, setDate] = useState(GetDate);
+    const [date, setDate] = useState(getDate);
     const { user } = useAuth();
     const { height, width } = useWindowDimensions();
     
@@ -19,7 +19,6 @@ const NewTopic = ({setView}) => {
         "topicName":topicName,
         "topicDescription":topicDescription};
       const response = await createTopic(topic);
-      console.log(response);
       setView("view");
     }
     return (

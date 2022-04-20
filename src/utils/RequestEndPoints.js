@@ -20,8 +20,8 @@ export const userSignJWTVerification = (user) => {
     return res;
 };
 
-export const fetchUserProfile =() => {
-    const requestUrl = 'http://localhost:8080/user/';
+export const fetchUserProfile =(userId) => {
+    const requestUrl = 'http://localhost:8080/user/'+userId;
     const options = {
         method: 'GET',
         headers: {
@@ -74,8 +74,21 @@ export const getTopic = () => {
     
 }
 
-export const getAllTopics = () => {
+export const getAllTopics = (userId) => {
     const requestUrl = 'http://localhost:8080/topic/';
+    const options = {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    const res =request(requestUrl, options).then(response => response.data);    
+    return res;
+}
+
+export const getAllTopicsOfUser = (userId) => {
+    const requestUrl = 'http://localhost:8080/topic/user/'+userId;
     const options = {
         method: 'GET',
         headers: {
@@ -111,5 +124,30 @@ export const addPostContent = (content,postId) => {
         body: content,
     };
     const res = request(requestUrl, options).then(response => response.data);    
+    return res;
+}
+
+export const fetchPostsByTopic = (topicId) => {
+    const requestUrl = 'http://localhost:8080/post/ofTopic/'+topicId;
+    const options = {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    const res =request(requestUrl, options).then(response => response.data);    
+    return res;
+}
+
+export const fetchPostImage = (postId) => {
+    const requestUrl = `http://localhost:8080/post/${postId}/content/image`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Access-Allow-Cross-Origin':"*"
+        },
+    };
+    const res = request(requestUrl, options);
     return res;
 }

@@ -9,7 +9,7 @@ import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import CastForEducationOutlinedIcon from "@mui/icons-material/CastForEducationOutlined";
 import useWindowDimensions from "../../utils/useWindowDimensions";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import GetDate from "../../utils/GetDate";
+import { getDate } from "../../utils/GetDate";
 import { useEffect } from "react";
 import { createPost, addPostContent } from "../../utils/RequestEndPoints";
 import Dropzone from "./Dropzone";
@@ -47,7 +47,7 @@ const NewPost = ({ setView, topic }) => {
     const [attachment, setAttachment] = useState();
     const [contentType, setContentType] = useState("");
     const { user } = useAuth();
-    const [date, setDate] = useState(GetDate);
+    const [date, setDate] = useState(getDate);
 
     const savePost = async () => {
         const post = {
@@ -60,7 +60,6 @@ const NewPost = ({ setView, topic }) => {
         if (attachment != null) {
             const formData = new FormData();
             formData.append("file", attachment);
-            console.log(attachment);
             const savedPost = await addPostContent(formData, res.id);
         }
         setView("viewTopic");
@@ -83,12 +82,15 @@ const NewPost = ({ setView, topic }) => {
                         <Avatar alt={user.displayName} src={user.photoURL} />
                     }
                     action={
+                        <>
+                        <Chip label={date} color="secondary"  />
                         <IconButton aria-label="settings" sx={{ color: "white" }}>
                             <MoreVertIcon />
-                        </IconButton>
+                            </IconButton>
+                            </>
                     }
-                    title={<Typography variant="h6">Create New Post</Typography>}
-                    subheader={<span style={{ color: "white" }}>{date}</span>}
+                    title={<Typography variant="h6">{topic.topicName}</Typography>}
+                    subheader={<span style={{ color: "white" }}>Create new post</span>}
                 />
                 {contentType == "image" && (
                     <Grid
@@ -103,11 +105,11 @@ const NewPost = ({ setView, topic }) => {
                         <CardMedia sx={ 
                             (theme) => ({
                                 [theme.breakpoints.up('xs')]: {
-                                    height: "300px",
+                                    height: "100%",
                                 width: "100%"
                                   },
                                   [theme.breakpoints.up('sm')]: {
-                                    height: "300px",
+                                    height: "100%",
                                     width:"100%"
                                   },
                                   [theme.breakpoints.up('md')]: {
@@ -119,8 +121,8 @@ const NewPost = ({ setView, topic }) => {
                                     width:"500px"
                                   },
                                   [theme.breakpoints.up('xl')]: {
-                                    height: "600px",
-                                    width:"600px"
+                                    height: "500px",
+                                    width:"500px"
                                   }
       })} component="img" image={URL.createObjectURL(attachment)} alt={title} />
                         {/*</CardMediaComponent>*/}
@@ -139,7 +141,7 @@ const NewPost = ({ setView, topic }) => {
                     padding={2}
                     divider={<Divider orientation="vertical" flexItem />}
                 >
-                    <Chip label={topic.topicName} color="secondary" />
+                    
                     <Tooltip title="Add Attachment">
                         <IconButton>
                             <AttachmentIcon />

@@ -1,26 +1,18 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import { Card, CardHeader, CardContent, Grid, Avatar,IconButton,CardMedia,CardActions,Collapse,Typography } from "@mui/material";
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentSection from './CommentSection';
-import { AddCircleOutlineTwoTone } from '@mui/icons-material';
-import { TextField } from '@mui/material';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useState,useEffect } from 'react';
+import { getDateFromTimestamp } from "../../utils/GetDate";
+import { useAuth } from '../../hooks/useAuth';
+import { fetchPostImage } from "../../utils/RequestEndPoints";
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -32,11 +24,16 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const Post = () => {
+const Post = ({post}) => {
   const [expanded, setExpanded] = useState(false);
   const [saved, setSaved] = useState(false);
   const [like, setLike] = useState(false);
+  const [imageData, setImageData] = React.useState({});
 
+  const getImage = async() => {
+        const response = await fetchPostImage(post.id);
+        setImageData(response.data);
+  };
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -48,28 +45,67 @@ const Post = () => {
   const deleteLike = () => {
 
   }
+
+  useEffect(() => {
+    getImage();
+  },[]);
   return (
-    <Card sx={{ borderRadius:"25px" }} variant="outlined">
+    <Card sx={{ borderRadius:"25px",boxShadow:1 }} variant="outlined">
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={post.topic.user.profileImage}/>
         }
         action={
           <IconButton aria-label="settings">
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={post.postTitle}
+        subheader={getDateFromTimestamp(post.timestampOfCreation)}
       /> 
-      
+                      {post.contentType == "IMAGE" && (
+                    <Grid
+                    container
+                    spacing={1}
+                    direction="column"
+                    alignItems="center"
+                    justify="center"
+                  >
+                  
+          <Grid item xs={3}>
+            {<CardMedia sx={
+              (theme) => ({
+                [theme.breakpoints.up('xs')]: {
+                  height: "200px",
+                  width: "200px"
+                },
+                [theme.breakpoints.up('sm')]: {
+                  height: "200px",
+                  width: "200px"
+                },
+                [theme.breakpoints.up('md')]: {
+                  height: "200px",
+                  width: "200"
+                },
+                [theme.breakpoints.up('lg')]: {
+                  height: "300px",
+                  width: "300px"
+                },
+                [theme.breakpoints.up('xl')]: {
+                  height: "300px",
+                  width: "300px"
+                }
+              })} component="img" image={`data:image/jpeg;base64,${imageData}`} alt={post.postTitle} />
+            }
+             {/*<img
+          src={`data:image/jpeg;base64,${imageData}`}
+          alt=""
+          />*/}
+                        </Grid>
+                    </Grid>)}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+          {post.postDescription}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
